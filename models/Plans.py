@@ -8,6 +8,6 @@ class Plan (BaseModel):
     description: str
     price: str
     risk_level: List[int]
-    img: Optional[str]
+    img: str
     role: str
     # google: False
