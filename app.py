@@ -14,76 +14,136 @@ ma = Marshmallow(app)
 with app.app_context():
     db.create_all()
 
+#! MODELOS:
 
-class Articles(db.Model):
+
+class Plans(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    body = db.Column(db.Text())
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text())
+    price = db.Column(db.String(100))
+    img = db.Column(db.String(100))
     date = db.Column(db.DateTime, default=datetime.datetime.now)
 
-    def __init__(self, title, body):
-        self.title = title
-        self.body = body
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.Text())
+    phone_number = db.Column(db.String(20))
+    email = db.Column(db.String(20))
+    neighborhood = db.Column(db.String(20))
+    city = db.Column(db.String(30))
+    department = db.Column(db.String(30))
+    img = db.Column(db.String(50))
+    date = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    #!INICIALIZAR MODELO PLANES:
+    def __init__(self, name, description, price, img):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.img = img
+
+    #!INICIALIZAR MODELO USUARIOS:
+    def __init__(self, first_name, last_name, phone_number, email, neighborhood, city, department, img):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone_number = phone_number
+        self.email = email
+        self.neighborhood = neighborhood
+        self.city = city
+        self.department = department
+        self.img = img
+
+ # self.price = price
+ # self.isSelected = isSelected
 
 
-# Serializing data to submit it to the frontend
-
-
-class ArticleSchema(ma.Schema):
+#! Serializing data to submit it to the frontend
+class PlanSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'title', 'body', 'date')
+        fields = ('id', 'name', 'description', 'price', 'img', 'date')
 
 
-# For one article
-article_schema = ArticleSchema()
-# For a set of articles
-articles_schema = ArticleSchema(many=True)
+#! For one article
+plan_schema = PlanSchema()
+#! For a set of articles
+plans_schema = PlanSchema(many=True)
+
+#! Serializing data to submit it to the frontend
+
+
+class UserSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'first_name', 'last_name', 'phone_number',
+                  'email', 'neighborhood', 'city', 'department', 'img', 'date')
+
+
+#! For one article
+user_schema = UserSchema()
+#! For a set of articles
+users_schema = UserSchema(many=True)
+
+# TODO: ORGANIZAR LOS MODELOS Y ESQUEMAS DE MARSHMELLOW (PLANS, USERS, //PlanSchema, UserSchema ) EN OTRO SCRIPT
+# TODO: MONTAR CRUD DE USUARIOS
+
+
+# !!!!!!!!!!!!RUTES!!!!!!!!!!!!!#
 
 
 @app.route('/get', methods=['GET'])
 def get_allLitisPackages():
-    all_articles = Articles.query.all()
-    results = articles_schema.dump(all_articles)
+    all_articles = Plans.query.all()
+    results = plan_schema.dump(all_articles)
     return jsonify(results)
 
 
-@app.route('/get/<id>/', methods=['GET'])
-def get_LitisPackagesById(id):
-    article = Articles.query.get(id)
-    return article_schema.jsonify(article)
+# @app.route('/get/<id>/', methods=['GET'])
+# def get_LitisPackagesById(id):
+#     article = Articles.query.get(id)
+#     return article_schema.jsonify(article)
 
 
 @app.route('/update/<id>/', methods=['PUT'])
 def update_LitisPackagesById(id):
-    article = Articles.query.get(id)
+    _plan = Plans.query.get(id)
 
-    title = request.json['title']
-    body = request.json['body']
+    name = request.json['name']
+    description = request.json['description']
+    img = request.json['img']
+    price = request.json['price']
 
-    article.title = title
-    article.body = body
+    _plan.name = name
+    _plan.description = description
+    _plan.price = price
+    _plan.img = img
 
     db.session.commit()
-    return article_schema.jsonify(article)
+    return plan_schema.jsonify(_plan)
 
 
-@app.route('/add', methods=['POST'])
+@app.route('/planss', methods=['POST'])
 def add_article():
-    title = request.json['title']
-    body = request.json['body']
-    articles = Articles(title, body)
-    db.session.add(articles)
+    name = request.json['name']
+    description = request.json['description']
+    price = request.json['price']
+    img = request.json['img']
+    plans = Plans(name, description, price, img)
+    db.session.add(plans)
     db.session.commit()
-    return article_schema.jsonify(articles)
+    return plan_schema.jsonify(plans)
+
+    # price = request.json['price']
 
 
 @app.route('/delete/<id>/', methods=['DELETE'])
 def delete_LitisPackagesById(id):
-    article = Articles.query.get(id)
-    db.session.delete(article)
+    plan = Plans.query.get(id)
+    db.session.delete(plan)
     db.session.commit()
 
-    return article_schema.jsonify(article)
+    return plan_schema.jsonify(plan)
 
 
 if __name__ == "__main__":
