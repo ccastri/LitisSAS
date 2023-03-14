@@ -1,6 +1,8 @@
 from flask import Flask
 import os
 from src.database import db
+from src.auth import auth
+from src.plans import plans
 
 
 def create_app(test_config=None):
@@ -17,10 +19,13 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(test_config)
 
-    # @app.route('/get2', methods=['GET'])
-    # def get_allLitisPackages():
+    # @app.route('/register', methods=['POST'])
+    # def register_new_user():
     #     return {"hello": "world"}
 
+    app.register_blueprint(auth)
+    app.register_blueprint(plans)
     db.app = app
     db.init_app(app)
+
     return app
