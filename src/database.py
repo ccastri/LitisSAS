@@ -14,33 +14,36 @@ ma = Marshmallow()
 #     db.create_all()
 
 
-class Plans(db.Model):
+# class Plan(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), unique=True, nullable=False)
+#     description = db.Column(db.Text(), unique=True, nullable=False)
+#     price = db.Column(db.String(100), unique=True, nullable=False)
+#     img = db.Column(db.String(100), unique=True, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     date = db.Column(db.DateTime, default=datetime.datetime.now)
+
+
+# def __repr__(self) -> str:
+#     return 'Plan>>> {self.name}'
+
+
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    description = db.Column(db.Text(), unique=True, nullable=False)
-    price = db.Column(db.String(100), unique=True, nullable=False)
-    img = db.Column(db.String(100), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date = db.Column(db.DateTime, default=datetime.datetime.now)
-
-
-def __repr__(self) -> str:
-    return 'Plan>>> {self.name}'
-
-
-class Users(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
-    last_name = db.Column(db.Text(), nullable=False)
-    phone_number = db.Column(db.String(20), unique=True, nullable=False)
+    # first_name = db.Column(db.String(100), nullable=False)
+    # last_name = db.Column(db.Text(), nullable=False)
+    # phone_number = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
-    neighborhood = db.Column(db.String(20), nullable=False)
-    city = db.Column(db.String(30), nullable=False)
-    department = db.Column(db.String(30), nullable=False)
-    img = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(20), nullable=False)
+    # confirm_password = db.Column(db.String(20), nullable=False)
+    # neighborhood = db.Column(db.String(20), nullable=False)
+    # city = db.Column(db.String(30), nullable=False)
+    # department = db.Column(db.String(30), nullable=False)
+    # img = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
-    plans = db.relationship('Plan', backref="user")
+    # plans = db.relationship('Plan', backref="user")
 
     def __repr__(self) -> str:
-        return 'User>>> {self.phone_number}'
+        return 'User>>> {self.username}'
