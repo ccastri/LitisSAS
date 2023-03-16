@@ -3,6 +3,7 @@ import os
 from src.database import db
 from src.auth import auth
 from src.plans import plans
+from flask_jwt_extended import JWTManager
 
 
 def create_app(test_config=None):
@@ -14,18 +15,18 @@ def create_app(test_config=None):
             SECRET_KEY=os.environ.get("SECRET_KEY"),
             SQLALCHEMY_DATABASE_URI=os.environ.get("SQLALCHEMY_DB_URI"),
             SQLALCHEMY_TRACK_MODIFICATIONS=False,
+            JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY')
         )
 
     #!Test config defined
     else:
         app.config.from_mapping(test_config)
-
-    # @app.route('/register', methods=['POST'])
-    # def register_new_user():
-    #     return {"hello": "world"}
-
+    #!Blueprint for url pointing (RouterModule):
     app.register_blueprint(auth)
     app.register_blueprint(plans)
+    #!JWT Middleware connection:
+    JWTManager(app)
+    #!Database extension and initialization
     db.app = app
     db.init_app(app)
 
