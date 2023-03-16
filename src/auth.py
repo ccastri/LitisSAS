@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token
 # from src.database import Users
 
 from src.database import User, db
@@ -112,12 +112,11 @@ def register():
     # First hast
         # hash_this = password
 
-    pwd_hash = generate_password_hash(
-        password, method='pbkdf2:sha1', salt_length=8)
-    print([pwd_hash])
+    password_hash = generate_password_hash(password)
     # user = User(username=username, password=pwd_hash, email=email)
-    user = User(first_name=first_name, last_name=last_name, phone_number=phone_number, confirm_password=confirm_password,
-                username=username, password=pwd_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img)
+    user = User(first_name=first_name, last_name=last_name, phone_number=phone_number, confirm_password=password_hash,
+                username=username, password=password_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img)
+    print(user.password)
 
     db.session.add(user)
     db.session.commit()
@@ -130,7 +129,7 @@ def register():
             'phone_number': phone_number,
             'username': username,
             'email': email,
-            'password': password,
+            'password': password_hash,
             'neighborhood': neighborhood,
             'city': city,
             'department': department
@@ -145,10 +144,10 @@ def login():
     email = request.json.get('email', '')
     password = request.json.get('password', '')
 
-    print(email, password)
+    # print(email, password)
 
     user = User.query.filter_by(email=email).first()
-    print(user.phone_number)
+    print(user.password)
     if user:
         is_pass_correct = check_password_hash(user.password, password)
 
@@ -166,3 +165,9 @@ def login():
                 }
             })
     return jsonify({'error': 'wrong credentials'})
+
+
+@auth.get('/me')
+@jwt_required
+def auth_route():
+    return jsonify({"You've reached an auth route"})

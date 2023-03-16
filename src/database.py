@@ -35,7 +35,7 @@ class User(db.Model):
     phone_number = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
-    password = db.Column(db.Text(), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     # password = db.Column(db.String(20), nullable=False)
     confirm_password = db.Column(db.String(50), nullable=True)
     neighborhood = db.Column(db.String(20), nullable=False)
