@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
-from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token
+from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, get_jwt_identity
 # from src.database import Users
 
 from src.database import User, db
@@ -23,6 +23,8 @@ def register():
     city = request.json['city']
     department = request.json['department']
     img = request.json['img']
+    plan_id = request.json['plan']
+    created_at = request.json['created_at']
 
 
 #! Validaciones:
@@ -54,7 +56,13 @@ def register():
         return jsonify({
             "error": "Por favor ingrese un numero de telefono valido"
         })
-    # TODO: phone number is taken
+    if len(phone_number) != 10:
+        return jsonify({
+            "error": "Por favor ingrese un numero de telefono valido"
+        })
+
+    if User.query.filter_by(phone_number=phone_number).first() is not None:
+        return jsonify({"error": "Phone number is taken already"})
     #! neighborhood:
     if " " in neighborhood:
         return jsonify({
@@ -75,7 +83,7 @@ def register():
         return jsonify({
             'Password too short'
         })
-
+    # TODO: REGEX para el password
     # if password != password2:
     # return "error 401  passwords dont match":
     # else
@@ -92,8 +100,6 @@ def register():
         return jsonify({
             "error": 'username is too short'
         })
-
-    # TODO: TENGO UN BUG CON isalnum()
 
     if not username.isalnum() or " " in username:
         return jsonify({
@@ -115,7 +121,7 @@ def register():
     password_hash = generate_password_hash(password)
     # user = User(username=username, password=pwd_hash, email=email)
     user = User(first_name=first_name, last_name=last_name, phone_number=phone_number, confirm_password=password_hash,
-                username=username, password=password_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img)
+                username=username, password=password_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img, plan_id=plan_id, created_at=created_at)
     print(user.password)
 
     db.session.add(user)
@@ -135,8 +141,6 @@ def register():
             'department': department
         }
     })
-
-# Todo: autenticar y privatizar rutassss
 
 
 @auth.post('/login')
@@ -168,6 +172,22 @@ def login():
 
 
 @auth.get('/me')
-@jwt_required
+@jwt_required()
 def auth_route():
-    return jsonify({"You've reached an auth route"})
+    #! Para desplegar la informacion del perfil y completar con la seccion de docs
+    #!Este metodo devuelve el id del usuario autenticado
+    user_id = get_jwt_identity()
+
+    user = User.query.filter_by(id=user_id).first()
+    # ! Podria pasar el user directamente para trabajar con todos los atributos
+    return jsonify({'username': user.username,
+                    'email': user.email})
+
+
+@auth.post('/token/refresh')
+@jwt_required(refresh=True)
+def refresh_users_token():
+    identity = get_jwt_identity()
+    access = create_access_token(identity=identity)
+
+    return jsonify({'access': access})

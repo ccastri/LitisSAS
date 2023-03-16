@@ -1,8 +1,21 @@
-from flask import Blueprint
-
+from flask import Blueprint, request, jsonify
+from src.database import Plan, db
 plans = Blueprint("plans", __name__, url_prefix="/api/v1/plans")
 
 
 @plans.post('/')
-def register():
-    return 'there are some plans'
+def add_plans():
+    name = request.json['name']
+    description = request.json['description']
+    price = request.json['price']
+    img = request.json['img']
+    user_id = request.json['user_id']
+    created_at = request.json['created_at']
+
+    plans = Plan(name=name, description=description,
+                 price=price, img=img, user_id=user_id, created_at=created_at)
+
+    db.session.add(plans)
+    db.session.commit()
+
+    return plans
