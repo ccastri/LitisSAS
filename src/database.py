@@ -40,6 +40,7 @@ class User(db.Model):
     confirm_password = db.Column(db.String(50), nullable=True)
     neighborhood = db.Column(db.String(20), nullable=False)
     city = db.Column(db.String(30), nullable=False)
+    # TODO: CONVERTIR department in text
     department = db.Column(db.String(30), nullable=False)
     img = db.Column(db.String(50), nullable=False)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now)

@@ -53,6 +53,7 @@ def register():
         return jsonify({
             "error": "Por favor ingrese un numero de telefono valido"
         })
+    # TODO: phone number is taken
     #! neighborhood:
     if " " in neighborhood:
         return jsonify({
