@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
+from flask_jwt_extended import create_access_token, create_refresh_token
 # from src.database import Users
 
 from src.database import User, db
@@ -110,10 +111,14 @@ def register():
         return jsonify({"error": "username is taken already"})
     # First hast
         # hash_this = password
-    pwd_hash = generate_password_hash(password)
+
+    pwd_hash = generate_password_hash(
+        password, method='pbkdf2:sha1', salt_length=8)
+    print([pwd_hash])
     # user = User(username=username, password=pwd_hash, email=email)
     user = User(first_name=first_name, last_name=last_name, phone_number=phone_number, confirm_password=confirm_password,
-                username=username, password=password, email=email, neighborhood=neighborhood, city=city, department=department, img=img)
+                username=username, password=pwd_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img)
+
     db.session.add(user)
     db.session.commit()
 
@@ -132,10 +137,32 @@ def register():
         }
     })
 
+# Todo: autenticar y privatizar rutassss
 
-@auth.get('/login')
-def my_name():
 
-    return jsonify({
-        "error": 'Camilo Castrillon'
-    })
+@auth.post('/login')
+def login():
+    email = request.json.get('email', '')
+    password = request.json.get('password', '')
+
+    print(email, password)
+
+    user = User.query.filter_by(email=email).first()
+    print(user.phone_number)
+    if user:
+        is_pass_correct = check_password_hash(user.password, password)
+
+        # print(is_pass_correct)
+        if is_pass_correct:
+            refresh = create_refresh_token(identity=user.id)
+            access = create_access_token(identity=user.id)
+
+            return jsonify({
+                'user': {
+                    'refresh': refresh,
+                    'access': access,
+                    'username': user.username,
+                    'email': email
+                }
+            })
+    return jsonify({'error': 'wrong credentials'})
