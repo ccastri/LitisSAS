@@ -2,9 +2,8 @@ from flask import Blueprint, request, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
 from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, get_jwt_identity
-# from src.database import Users
-
 from src.database import User, db
+
 auth = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
@@ -23,8 +22,8 @@ def register():
     city = request.json['city']
     department = request.json['department']
     img = request.json['img']
-    plan_id = request.json['plan']
-    created_at = request.json['created_at']
+    # plan_id = request.json['plan']
+    # created_at = request.json['created_at']
 
 
 #! Validaciones:
@@ -60,7 +59,6 @@ def register():
         return jsonify({
             "error": "Por favor ingrese un numero de telefono valido"
         })
-
     if User.query.filter_by(phone_number=phone_number).first() is not None:
         return jsonify({"error": "Phone number is taken already"})
     #! neighborhood:
@@ -84,23 +82,12 @@ def register():
             'Password too short'
         })
     # TODO: REGEX para el password
-    # if password != password2:
-    # return "error 401  passwords dont match":
-    # else
-        # return confirm_password
-    #     return jsonify({
-    #         "Passwords dont match"
-    #     })
-    # if password != password2:
-    #     return jsonify({
-    #         "error": "passwords dont match"
-    #     })
+
     #!Username:
     if len(username) < 3:
         return jsonify({
             "error": 'username is too short'
         })
-
     if not username.isalnum() or " " in username:
         return jsonify({
             "error": 'Nombre de usuario debe contener numeros y letras, sin espacios spaces'
@@ -115,15 +102,13 @@ def register():
         return jsonify({"error": "Email is taken already"})
     if User.query.filter_by(username=email).first() is not None:
         return jsonify({"error": "username is taken already"})
-    # First hast
-        # hash_this = password
 
+    #!Hasheo de la contraseña
     password_hash = generate_password_hash(password)
-    # user = User(username=username, password=pwd_hash, email=email)
+    #! Nueva instancia de la clase usuario
     user = User(first_name=first_name, last_name=last_name, phone_number=phone_number, confirm_password=password_hash,
-                username=username, password=password_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img, plan_id=plan_id, created_at=created_at)
-    print(user.password)
-
+                username=username, password=password_hash, email=email, neighborhood=neighborhood, city=city, department=department, img=img,)
+    #!Añadir a la base de datos
     db.session.add(user)
     db.session.commit()
 
@@ -138,7 +123,7 @@ def register():
             'password': password_hash,
             'neighborhood': neighborhood,
             'city': city,
-            'department': department
+            'department': department,
         }
     })
 

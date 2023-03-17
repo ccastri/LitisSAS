@@ -10,12 +10,20 @@ def add_plans():
     price = request.json['price']
     img = request.json['img']
     user_id = request.json['user_id']
-    created_at = request.json['created_at']
+    # created_at = request.json['created_at']
 
     plans = Plan(name=name, description=description,
-                 price=price, img=img, user_id=user_id, created_at=created_at)
+                 price=price, img=img, user_id=user_id,)
 
     db.session.add(plans)
     db.session.commit()
 
-    return plans
+    return jsonify({'Message': 'Status code 200',
+                    'plans': {
+                        'name': name,
+                        'Description': description,
+                        'Price': price,
+                        'img': img,
+                        'user_id': user_id,
+                    }
+                    })

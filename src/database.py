@@ -20,6 +20,7 @@ class Plan(db.Model):
     description = db.Column(db.Text(), nullable=False)
     price = db.Column(db.String(100), unique=True, nullable=False)
     img = db.Column(db.String(100), unique=True, nullable=False)
+    #!Especifico la tabla usuarios y su columna ID para la foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
@@ -41,7 +42,8 @@ class User(db.Model):
     city = db.Column(db.String(30), nullable=False)
     department = db.Column(db.Text(), nullable=False)
     img = db.Column(db.String(50), nullable=False)
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     plan = db.relationship('Plan', backref="user")
 
     def __repr__(self) -> str:
