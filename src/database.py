@@ -27,14 +27,20 @@ class Plan(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    def __init__(self, name: str, description: str, price: str, img: str, user_id: int):
+        self.name = name
+        self.description = description
+        self.price = price
+        self.img = img
+        self.user_id = user_id
 
-def __repr__(self) -> str:
-    return 'Plan>>> {self.name}'
+    def __repr__(self) -> str:
+        return f'Plan>>> {self.name}'
 
 
 class User(db.Model):
 
-    __tablename__ = 'users'
+    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
@@ -52,5 +58,18 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     plan = db.relationship('Plan', backref="user")
 
+    def __init__(self, id: int, first_name: str, last_name: str, phone_number: str, email: str, username: str, password: str, neighborhood: str, city: str, department: str, img: str):
+        self.id = 1
+        self.first_name = first_name
+        self.last_name = last_name
+        self.phone_number = phone_number
+        self.email = email
+        self.username = username
+        self.password = password
+        self.neighborhood = neighborhood
+        self.city = city
+        self.department = department
+        self.img = img
+
     def __repr__(self) -> str:
-        return 'User>>> {self.username}'
+        return f'User>>> {self.username}'
