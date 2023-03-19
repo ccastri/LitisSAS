@@ -26,6 +26,8 @@ class Plan(db.Model):
     #!Especifico la tabla usuarios y su columna ID para la foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    #!Relacion con la tabla de facturas (plan: padre. Factura:children)
+    # bill = db.relationship('Bill', backref="plan")
 
     def __init__(self, name: str, description: str, price: str, img: str, user_id: int):
         self.name = name
@@ -57,6 +59,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     plan = db.relationship('Plan', backref="user")
+    # bill = db.relationship('Bill', backref="user")
 
     def __init__(self, id: int, first_name: str, last_name: str, phone_number: str, email: str, username: str, password: str, neighborhood: str, city: str, department: str, img: str):
         self.id = 1
@@ -70,6 +73,34 @@ class User(db.Model):
         self.city = city
         self.department = department
         self.img = img
+
+    def __repr__(self) -> str:
+        return f'User>>> {self.username}'
+
+#! Pending for testing
+
+
+class Bill(db.Model):
+
+    __tablename__ = 'bill'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    plan_description = db.Column(
+        db.Integer, db.ForeignKey('plan.despcription'))
+    plan_id = db.Column(db.Integer, db.ForeignKey('plan.id'))
+    plan_price = db.Column(db.Integer, db.ForeignKey('plan.price'))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+    pay_until = db.Column(db.DateTime, default=datetime.datetime.now)
+
+    def __init__(self, id: int, user_id: str, plan_description: str, plan_id: str, plan_price: str, created_at: str, pay_until: str):
+        self.id
+        self.user_id
+        self.plan_description
+        self.plan_id
+        self.plan_price
+        self.created_at
+        self.pay_until
 
     def __repr__(self) -> str:
         return f'User>>> {self.username}'
