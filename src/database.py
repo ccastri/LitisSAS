@@ -80,27 +80,27 @@ class User(db.Model):
 #! Pending for testing
 
 
-class Bill(db.Model):
+# class Bill(db.Model):
 
-    __tablename__ = 'bill'
+#     __tablename__ = 'bill'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    plan_description = db.Column(
-        db.Integer, db.ForeignKey('plan.despcription'))
-    plan_id = db.Column(db.Integer, db.ForeignKey('plan.id'))
-    plan_price = db.Column(db.Integer, db.ForeignKey('plan.price'))
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now)
-    pay_until = db.Column(db.DateTime, default=datetime.datetime.now)
+#     id = db.Column(db.Integer, primary_key=True)
+#     # user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+#     plan_description = db.Column(
+#         db.Integer, db.ForeignKey('plan.despcription'))
+#     plan_id = db.Column(db.Integer, db.ForeignKey('plan.id'))
+#     plan_price = db.Column(db.Integer, db.ForeignKey('plan.price'))
+#     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
+#     pay_until = db.Column(db.DateTime, default=datetime.datetime.now)
 
-    def __init__(self, id: int, user_id: str, plan_description: str, plan_id: str, plan_price: str, created_at: str, pay_until: str):
-        self.id
-        self.user_id
-        self.plan_description
-        self.plan_id
-        self.plan_price
-        self.created_at
-        self.pay_until
+#     def __init__(self, id: int, user_id: str, plan_description: str, plan_id: str, plan_price: str, created_at: str, pay_until: str):
+#         self.id
+#         self.user_id
+#         self.plan_description
+#         self.plan_id
+#         self.plan_price
+#         self.created_at
+#         self.pay_until
 
-    def __repr__(self) -> str:
-        return f'User>>> {self.username}'
+#     def __repr__(self) -> str:
+#         return f'User>>> {self.username}'

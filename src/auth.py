@@ -111,7 +111,7 @@ def register():
     #!Añadir a la base de datos
     db.session.add(user)
     db.session.commit()
-
+# TODO: AÑADIR render_template('profile.html') from react!!!
     return jsonify({
         'message': "User created. Status code: 200",
         'user': {
