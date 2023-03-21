@@ -1,11 +1,61 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from werkzeug.security import check_password_hash, generate_password_hash
-import validators
+from wtforms import Form, BooleanField, StringField, PasswordField, validators
+# import validators
 from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, get_jwt_identity
 from src.database import User, db
-from src.templates import RegisterForm
+# from src import RegisterForm
 
 auth = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
+
+
+class RegisterForm(Form):
+
+    first_name = StringField('First Name', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    last_name = StringField('Last Name', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    phone_number = StringField(
+        'Phone Number', [
+            validators.DataRequired(),
+            validators.Length(min=10, max=10)])
+    username = StringField('Username', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    email = StringField('Email', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    #!Para verificar que el email inicie con google
+    # User.query.filter(User.email.endswith('@gmail.com')).all()
+    # return self.isGoogle
+
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25),
+        validators.EqualTo('confirm_password',
+                           message="Confirm Password didn't match")
+    ])
+    confirm_password = PasswordField('Confirm Password', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    neighborhood = StringField(
+        'neighborhood', [
+            validators.DataRequired(),
+            validators.Length(min=2, max=25)])
+    city = StringField('city', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    department = StringField('department', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    img = StringField('img', [
+        validators.DataRequired(),
+        validators.Length(min=2, max=25)])
+    accept_tos = BooleanField(
+        'I accept the <a href="/tos/">Terms of service </a> and the <a href="/privacy/> Privacy Notice </a> (Last updated jul 16 2016)',
+        [validators.DataRequired(), ])
 
 
 @auth.post('/register')
@@ -23,10 +73,11 @@ def register():
     city = request.json['city']
     department = request.json['department']
     img = request.json['img']
+    # tos_is_clicked = request.json['tos_is_clicked']
     # plan_id = request.json['plan']
     # created_at = request.json['created_at']
 
-    form = RegisterForm(request.form)
+    # form = RegisterForm(request.form)
 
 #! Validaciones:
 
@@ -114,20 +165,21 @@ def register():
     db.session.add(user)
     db.session.commit()
 # TODO: AÑADIR render_template('profile.html') from react!!!
-    return jsonify({
-        'message': "User created. Status code: 200",
-        'user': {
-            'first_name': first_name,
-            'last_name': last_name,
-            'phone_number': phone_number,
-            'username': username,
-            'email': email,
-            'password': password_hash,
-            'neighborhood': neighborhood,
-            'city': city,
-            'department': department,
-        }
-    })
+    return render_template('register.html')
+    # return jsonify({
+    #     'message': "User created. Status code: 200",
+    #     'user': {
+    #         'first_name': first_name,
+    #         'last_name': last_name,
+    #         'phone_number': phone_number,
+    #         'username': username,
+    #         'email': email,
+    #         'password': password_hash,
+    #         'neighborhood': neighborhood,
+    #         'city': city,
+    #         'department': department,
+    #     }
+    # })
 
 
 @auth.post('/login')

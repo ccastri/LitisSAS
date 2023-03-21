@@ -1,7 +1,9 @@
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from flask import request, Blueprint, jsonify
 
 
 class RegisterForm(Form):
+
     first_name = StringField('First Name', [
         validators.required(),
         validators.Length(min=2, max=25)])
@@ -11,13 +13,16 @@ class RegisterForm(Form):
     phone_number = StringField(
         'Phone Number', [
             validators.required(),
-            validators.Length(min=2, max=25)])
+            validators.Length(min=10, max=10)])
     username = StringField('Username', [
         validators.required(),
         validators.Length(min=2, max=25)])
     email = StringField('Email', [
         validators.required(),
         validators.Length(min=2, max=25)])
+    # User.query.filter(User.email.endswith('@gmail.com')).all()
+    # return self.isGoogle
+
     password = PasswordField('Password', [
         validators.required(),
         validators.Length(min=2, max=25),
