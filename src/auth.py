@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import validators
 from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token, get_jwt_identity
 from src.database import User, db
+from src.templates import RegisterForm
 
 auth = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
@@ -25,6 +26,7 @@ def register():
     # plan_id = request.json['plan']
     # created_at = request.json['created_at']
 
+    form = RegisterForm(request.form)
 
 #! Validaciones:
 
