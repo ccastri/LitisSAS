@@ -1,113 +1,21 @@
-{% extends 'header.html'%}
-
-{% block body %} 
+{% extends 'header.html'%} {% block body %}
 <body>
-{%from "_formhelpers.html" import render_field%}
-    <form  method= post action="/register/">
-
-      <label >
-       Nombres
-      </label>
-      <input
-      name='firstName'
-      required
-      value={user.firstName}
-    />
-      {% comment %} {onSubmit ? 
-        (user.firstName.length === 0) ? 
-        (<p className="text-red-500 text-xs italic">Please fill out this field.</p>) :
-        (<></>)  :
-        ('')
-      } {% endcomment %}
-
-      <label >
-        Apellidos
-      </label>
-      <input 
-       name='lastName'
-       required
-      value={user.lastName}
-    id="grid-last-name"
-     type="text" 
-     placeholder="Doe"/>
-
-      <label  htmlFor="grid-city">
-        Ciudad
-      </label>
-          <select
-           name='city'
-           value={user.city}
-           
-           >
-          {% comment %} {Cities.map( city=>( {% endcomment %}
-            <option 
-            {% comment %} key={city.city} {% endcomment %}
-            >{city.city}</option>
-            {% comment %} ))} {% endcomment %}
-        </select>
-
-      <label  htmlFor="grid-state">
-        Departamento
-      </label>
-
-        <select  id="grid-state"
-         name='department'
-         value={user.department}
-        
-         >
-          {% comment %} {Departments.map( department=>( {% endcomment %}
-            <option 
-            {% comment %} key={department.Department} {% endcomment %}
-            placeholder=''
-            >{department.Department}</option>
-            {% comment %} ))} {% endcomment %}
-        </select>
-
-      <label htmlFor="grid-first-name">
-        Barrio
-      </label>
-      <input
-      name='neighborhood'
-      required
-      value={user.phoneNumber}
-      onChange={handleChange}
-       id="grid-first-name" 
-       type="text" 
-       placeholder="Jane"/>
-      {% comment %} {onSubmit ? 
-        (user.firstName.length === 0) ? 
-        (<p className="text-red-500 text-xs italic">Please fill out this field.</p>) :
-      (<></>)  :
-      ('')
-         } {% endcomment %}
-
-        
-        <input
-      name='Neighborhood'
-      required
-      value="user.isBenefeciary"
-      /> weed
-      {% comment %} {onSubmit ? 
-        (user.firstName.length === 0) ? 
-        (<p className="text-red-500 text-xs italic">Please fill out this field.</p>) :
-      (<></>)  :
-      ('')
-         } {% endcomment %}
-
-        <input
-      name='isBeneficiary'
-      required
-      value="user.isBenefeciary" /> pglo
-
-      {% comment %} {onSubmit ? 
-        (user.firstName.length === 0) ? 
-        (<p className="text-red-500 text-xs italic">Please fill out this field.</p>) :
-        (<></>)  :
-        ('')
-      } {% endcomment %}
-
-<button type="submit">REGISTRARSE</button>
-
-</form>
+  {%from "_formhelpers.html" import render_field%}
+  <div>
+    <form method="post" action="/register/">
+      <dl>
+        {{render_field(form.first_name)}} {{render_field(form.last_name)}}
+        {{render_field(form.phone_number)}} {{render_field(form.username)}}
+        {{render_field(form.email)}} {{render_field(form.password)}}
+        {{render_field(form.confirm_password)}}
+        {{render_field(form.neigborhood)}} {{render_field(form.city)}}
+        {{render_field(form.department)}} {{render_field(form.img)}}
+      </dl>
+      <p><input type="text" valur="Register" /></p>
+    </form>
+    {% if error %}
+    <p><strong> Error:</strong> {{error}}</p>
+    {% endif%}
+  </div>
 </body>
- {% endblock %}
+{% endblock %}
