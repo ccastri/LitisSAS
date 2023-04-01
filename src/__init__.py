@@ -4,10 +4,12 @@ from src.database import db
 from src.auth import auth
 from src.plans import plans
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS, cross_origin
 
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
     if test_config is None:
 

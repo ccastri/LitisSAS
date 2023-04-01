@@ -8,6 +8,8 @@ from src.database import User, db, user_schema, users_schema
 from flask_marshmallow import Marshmallow
 from marshmallow import fields, Schema
 
+# from flask_cors import cross_origin
+
 from src import app
 
 auth = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
@@ -16,27 +18,49 @@ ma = Marshmallow(app)
 
 
 @auth.route('/register', methods=['POST'])
+# @cross_origin()
 def register():
 
     #! Acceso a las columnas de la BB.DD. en la tabla usuario
-    # first_name = request.get_json['firstName']
-    # last_name = request.get_json['lastName']
-    # phone_number = request.get_json['phoneNumber']
-    # username = request.get_json['username']
-    # email = request.get_json['email']
-    # password = request.get_json['password']
+    # first_name = request.json['first_name']
+    # last_name = request.json['last_name']
+    # phone_number = request.json['phone_number']
+    # email = request.json['email']
+    # username = request.json['username']
+    # password = request.json['password']
+    # confirm_password = request.json['confirm_password']
+    # neighborhood = request.json['neighborhood']
+    # city = request.json['city']
+    # department = request.json['department']
+    # img = request.json['img']
     # # password2 = request.get_json['password2']
-    # confirm_password = request.get_json['confirmPassword']
-    # neighborhood = request.get_json['neighborhood']
-    # city = request.get_json['city']
-    # department = request.get_json['department']
-    # img = request.get_json['img']
-    # tos_is_clicked = request.get_json['tos_is_clicked']
+    # tos_is_clicked = request.json['tos_is_clicked']
+    # plan_id = request.json['plan']
+    # created_at = request.json['created_at']
+    first_name = request.json['firstName']
+    last_name = request.json['lastName']
+    phone_number = request.json['phoneNumber']
+    username = request.json['username']
+    email = request.json['email']
+    password = request.json['password']
+    # password2 = request.get_json['password2']
+    confirm_password = request.json['confirmPassword']
+    neighborhood = request.json['neighborhood']
+    city = request.json['city']
+    department = request.json['department']
+    img = request.json['img']
+    tos_is_clicked = request.json['tos_is_clicked']
     # # plan_id = request.json['plan']
-    # created_at = request.get_json['created_at']
-    form_data = request.get_json()
+    # created_at = request.json['created_at']
+    # form_data = request.get_json()
     # errors = user_schema.validate(form_data)
+    new_user = User(first_name, last_name, phone_number, email, username,
+                    password, confirm_password, neighborhood, city, department, img, tos_is_clicked)
 
+    db.session.add(new_user)
+    db.session.commit()
+
+    return user_schema.jsonify(new_user)
     # if not username.isalnum() or " " in username:
     #     return jsonify({
     #         "error": 'Nombre de usuario debe contener numeros y letras, sin espacios spaces'
@@ -63,7 +87,7 @@ def register():
     # db.session.commit()
 
     # return user_schema.jsonify(user)
-    return jsonify({'this is a user'})
+    # return jsonify({'this is a user'})
 
     # if request.method == 'GET':
     #     # return 'this is the register view'
