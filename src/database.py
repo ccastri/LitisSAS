@@ -1,7 +1,7 @@
-from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from flask_marshmallow import Marshmallow
+# from marshmallow import Length
 
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/litis'
@@ -55,45 +55,35 @@ class User(db.Model):
     neighborhood = db.Column(db.String(20), nullable=False)
     city = db.Column(db.String(30), nullable=False)
     department = db.Column(db.String(30), nullable=False)
-    img = db.Column(db.Text(), nullable=True)
+    img = db.Column(db.Text(), nullable=False, default="")
     tos_is_clicked = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
     # updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     plan = db.relationship('Plan', backref="user")
     # bill = db.relationship('Bill', backref="user")
 
-    def __init__(self, first_name: str, last_name: str, phone_number: str, email: str, username: str, password: str, confirm_password: str, neighborhood: str, city: str, department: str, img: str, tos_is_clicked: bool,):
-        # self.id = id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.phone_number = phone_number
-        self.email = email
-        self.username = username
-        self.password = password
-        self.confirm_password = confirm_password
-        self.neighborhood = neighborhood
-        self.city = city
-        self.department = department
-        self.img = img
-        # self.created_at = created_at
-        self.tos_is_clicked = tos_is_clicked
 
-    def __repr__(self) -> str:
-        return f'User>>> {self.username}'
-
-#! Pending for testing
+def __init__(self, first_name: str, last_name: str, phone_number: str, email: str, username: str, password: str, confirm_password: str, neighborhood: str, city: str, department: str, tos_is_clicked: bool, ):
+    # img: str,
+    # tos_is_clicked: bool,
+    # self.id = id
+    self.first_name = first_name
+    self.last_name = last_name
+    self.phone_number = phone_number
+    self.email = email
+    self.username = username
+    self.password = password
+    self.confirm_password = confirm_password
+    self.neighborhood = neighborhood
+    self.city = city
+    self.department = department
+    # self.img = img
+    self.tos_is_clicked = tos_is_clicked
+    # self.created_at = created_at
 
 
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = ('first_name', 'last_name', 'phone_number', 'email', 'username',
-                  'password', 'confirm_password', 'neighborhood', 'city', 'department', 'img', 'tos_is_clicked')
-
-
-#! For one article
-user_schema = UserSchema()
-#! For a set of articles
-users_schema = UserSchema(many=True)
+def __repr__(self) -> str:
+    return f'User>>> {self.username}'
 # class Bill(db.Model):
 
 #     __tablename__ = 'bill'
