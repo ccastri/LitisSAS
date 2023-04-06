@@ -55,17 +55,20 @@ class User(db.Model):
     neighborhood = db.Column(db.String(20), nullable=False)
     city = db.Column(db.String(30), nullable=False)
     department = db.Column(db.String(30), nullable=False)
-    img = db.Column(db.Text(), nullable=False, default="")
+    img = db.Column(db.Text(), nullable=False, default="null")
     tos_is_clicked = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now)
     # updated_at = db.Column(db.DateTime, onupdate=datetime.datetime.now)
     plan = db.relationship('Plan', backref="user")
     # bill = db.relationship('Bill', backref="user")
+    # role = db.Column(db.Boolean, default=False) #Sting en nodeJS
+    #google = db.Column(db.Boolean, default=False)
 
 
 def __init__(self, first_name: str, last_name: str, phone_number: str, email: str, username: str, password: str, confirm_password: str, neighborhood: str, city: str, department: str, tos_is_clicked: bool, ):
-    # img: str,
-    # tos_is_clicked: bool,
+    # self.img: str,
+    # self.role: bool,
+    # self.google: bool,
     # self.id = id
     self.first_name = first_name
     self.last_name = last_name
@@ -80,6 +83,8 @@ def __init__(self, first_name: str, last_name: str, phone_number: str, email: st
     # self.img = img
     self.tos_is_clicked = tos_is_clicked
     # self.created_at = created_at
+    # self.role = role
+    # self.google = google
 
 
 def __repr__(self) -> str:
