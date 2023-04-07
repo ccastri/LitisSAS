@@ -3,6 +3,7 @@ import os
 from src.database import db
 from src.auth import auth
 from src.plans import plans
+# from routes.userRoutes import dashboard
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
@@ -26,6 +27,7 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
     #!Blueprint for url pointing (RouterModule):
     app.register_blueprint(auth)
+    # app.register_blueprint(dashboard)
     app.register_blueprint(plans)
     #!JWT Middleware connection:
     JWTManager(app)

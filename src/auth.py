@@ -71,7 +71,7 @@ def register():
 #     return jsonify({"error": "username is taken already"})
 
 
-@ auth.route('/login', methods=['POST'])
+@auth.route('/login', methods=['POST'])
 def login():
 
     new_user = request.json
@@ -104,17 +104,22 @@ def login():
     return jsonify({'error': 'wrong credentials'})
 
 
-@ auth.get('/dashborard/profile/id')
+@auth.route('/dashboard/profile/<id>/', methods=['GET'])
 @ jwt_required()
-def auth_route():
+def auth_route(id):
     #! Para desplegar la informacion del perfil y completar con la seccion de docs
     #!Este metodo devuelve el id del usuario autenticado
     user_id = get_jwt_identity()
 
     user = User.query.filter_by(id=user_id).first()
+    print(user.username)
     # ! Podria pasar el user directamente para trabajar con todos los atributos
-    return jsonify({'username': user.username,
-                    'email': user.email})
+    return jsonify({
+        'username': user.username,
+        'email': user.email,
+        'user.created_at': user.created_at,
+                   'user_jwt_token': user_id}
+                   )
 
 
 @ auth.post('/token/refresh')
