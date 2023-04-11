@@ -75,9 +75,26 @@ def register():
 #     return jsonify({"error": "username is taken already"})
 
 
-@auth.route('/login', methods=['POST', 'GET'])
+def get_jwt_token():
+    # Obtén el token del encabezado de la solicitud
+    token = request.headers.get('Authorization')
+    # Pasa el token a Next.js en un encabezado personalizado
+    response = app.make_response()
+    response.headers['X-Access-Token'] = token
+    return response
+
+
+@auth.route('/login', methods=['POST'])
 # @cross_origin()
 def login():
+    # def get_jwt_token():
+    #     # Obtén el token del encabezado de la solicitud
+    # token = request.headers.get('Authorization')
+    # # Pasa el token a Next.js en un encabezado personalizado
+    # response = app.make_response()
+    # response.headers['X-Access-Token'] = token
+    # return response
+    #!Respuesta default
     response = make_response(jsonify({
         'message': 'credenciales inválidas'
     }), 401)
@@ -93,27 +110,33 @@ def login():
         return jsonify({"error": errors}), 400
 
     user = User.query.filter_by(email=email).first()
-    print(user)
+    # print(user)
     if user:
-        print(user.password)
+        # print(user.password)
         print(password)
         is_pass_correct = check_password_hash(user.password, password)
 
         # print(is_pass_correct)
         if is_pass_correct:
             print("I've entered")
+
+            # def making_response(user):
             refresh = create_refresh_token(identity=user.id)
             access = create_access_token(identity=user.id)
             print(access)
             response = make_response(jsonify({
                 'message': 'usuario autenticado'
+
             }), 200)
             response.set_cookie('jwt_token', access,
-                                httponly=True, )
+                                )
             response.headers['Access-Control-Allow-Credentials'] = 'true'
-    print(request.cookies.get('jwt_token'))
+            print(request.cookies.get('jwt_token'))
+            return response
 
-    return response
+    #     print(request.cookies.get('jwt_token'))
+    # print(request.cookies.get('jwt_token'))
+    # return response
 
 # response.set_cookie('jwt_token', value=refresh,
     #                     httponly=True, samesite=None)
