@@ -3,23 +3,26 @@ import os
 from src.database import db
 from src.auth import auth
 from src.plans import plans
+from datetime import timedelta
 # from routes.userRoutes import dashboard
 from flask_jwt_extended import JWTManager
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    cors = CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app, resources={
+         r"/*": {"origins": "http://localhost:3000"}})
 
     if test_config is None:
 
         app.config.from_mapping(
+            DEBUG=True,
             SECRET_KEY=os.environ.get("SECRET_KEY"),
             SQLALCHEMY_DATABASE_URI=os.environ.get("SQLALCHEMY_DB_URI"),
             SQLALCHEMY_TRACK_MODIFICATIONS=False,
             JWT_SECRET_KEY=os.environ.get("JWT_SECRET_KEY"),
-            DEBUG=True
+            JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=1),
         )
 
     #!Test config defined
