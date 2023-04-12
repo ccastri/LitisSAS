@@ -15,7 +15,6 @@ ma = Marshmallow(app)
 
 
 @auth.route('/register', methods=['POST'])
-# @cross_origin()
 def register():
     #! Convertir el form del formato JSON de React
     #! A diccionario en Python para validarlo con Marshmallow
@@ -30,7 +29,6 @@ def register():
     #! WTForms validará los campos en el Backend
     form = RegisterForm(request.form)
     print(tos)
-
     if form.validate():
         #     #!Hasheo de la contraseña
         password_hash = generate_password_hash(
@@ -57,7 +55,6 @@ def register():
         response = make_response(jsonify(
             {
                 "user": user.email,
-                'refresh': refresh,
                 'access': access,
                 "message": "Form data is valid"
             }))
@@ -85,62 +82,35 @@ def get_jwt_token():
 
 
 @auth.route('/login', methods=['POST'])
-# @cross_origin()
 def login():
-    # def get_jwt_token():
-    #     # Obtén el token del encabezado de la solicitud
-    # token = request.headers.get('Authorization')
-    # # Pasa el token a Next.js en un encabezado personalizado
-    # response = app.make_response()
-    # response.headers['X-Access-Token'] = token
-    # return response
     #!Respuesta default
     response = make_response(jsonify({
         'message': 'credenciales inválidas'
     }), 401)
     new_user = request.json
-    print(new_user)
-    # errors = user_schema.validate(new_user)
-
+    #!Seleccionar campos del login form y validar
     email = new_user['email']
     password = new_user['password']
     errors = login_schema.validate(new_user)
-
     if errors:
         return jsonify({"error": errors}), 400
-
+    #!No tengo errores. Devuelvame el usuario que coincida con el email
     user = User.query.filter_by(email=email).first()
-    # print(user)
     if user:
-        # print(user.password)
-        print(password)
         is_pass_correct = check_password_hash(user.password, password)
-
-        # print(is_pass_correct)
         if is_pass_correct:
-            print("I've entered")
-
             # def making_response(user):
             refresh = create_refresh_token(identity=user.id)
             access = create_access_token(identity=user.id)
             print(access)
             response = make_response(jsonify({
                 'message': 'usuario autenticado'
-
             }), 200)
-            response.set_cookie('jwt_token', access,
-                                )
-            # response.headers['Access-Control-Allow-Credentials'] = 'true'
+            response.set_cookie('jwt_token', access,)
             print(request.cookies.get('jwt_token'))
             return response
 
-    #     print(request.cookies.get('jwt_token'))
-    # print(request.cookies.get('jwt_token'))
-    # return response
-
 # response.set_cookie('jwt_token', value=refresh,
-    #                     httponly=True, samesite=None)
-    # print(access)
     # jsonify({'user': {
     #         'refresh': refresh,
     #         'access': access,
@@ -154,7 +124,6 @@ def login():
 
 
 @auth.route('/dashboard/profile/<int:id>', methods=['GET'])
-# @cross_origin(supports_credentials=True)
 @ jwt_required()
 def profile(id):
     #! Para desplegar la informacion del perfil y completar con la seccion de docs
@@ -163,26 +132,21 @@ def profile(id):
     user_id = get_jwt_identity()
     print(access)
 
-    # if id == user_id:
-    # user = User.query.filter_by(id=user_id).first()
-    user = User.query.filter_by(id=user_id).first()
-    # access = create_access_token(identity=user.id)
-    print(user_id)
-    print('You good')
-    response = make_response(jsonify({
-        'message': 'usuario autenticado',
-        # 'username': user.username,
-        # 'email': user.email,
-        # 'user.created_at': user.created_at
-    }), 200)
-    response.set_cookie('jwt_token', access, secure=False)
-    print(response)
-    print(request.cookies.get('jwt_token'))
-# else:
-    print('this is the else right there')
+    if id == user_id:
+        user = User.query.filter_by(id=user_id).first()
+        response = make_response(jsonify({
+            'message': 'usuario autenticado',
+            'username': user.username,
+            'email': user.email,
+            # 'user.created_at': user.created_at
+        }), 200)
+        response.set_cookie('jwt_token', access, secure=False)
+        print(request.cookies.get('jwt_token'))
     # response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response, 200
-    return jsonify({'hey': 'fake it till u make it'})
+        return response, 200
+    else:
+        print('this is the else right there')
+    return
     return' no user found'
     # else:
     # user = User.query.filter_by(id=id).first()
