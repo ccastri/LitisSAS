@@ -130,7 +130,7 @@ def login():
             }), 200)
             response.set_cookie('jwt_token', access,
                                 )
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            # response.headers['Access-Control-Allow-Credentials'] = 'true'
             print(request.cookies.get('jwt_token'))
             return response
 
@@ -154,13 +154,14 @@ def login():
 
 
 @auth.route('/dashboard/profile/<int:id>', methods=['GET'])
-@cross_origin(supports_credentials=True)
+# @cross_origin(supports_credentials=True)
 @ jwt_required()
 def profile(id):
     #! Para desplegar la informacion del perfil y completar con la seccion de docs
     #!Este metodo devuelve el id del usuario autenticado
     access = request.cookies.get('jwt_token')
     user_id = get_jwt_identity()
+    print(access)
 
     # if id == user_id:
     # user = User.query.filter_by(id=user_id).first()
@@ -174,11 +175,12 @@ def profile(id):
         # 'email': user.email,
         # 'user.created_at': user.created_at
     }), 200)
-    response.set_cookie('jwt_token', value=access, secure=False)
+    response.set_cookie('jwt_token', access, secure=False)
     print(response)
     print(request.cookies.get('jwt_token'))
 # else:
     print('this is the else right there')
+    # response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response, 200
     return jsonify({'hey': 'fake it till u make it'})
     return' no user found'
